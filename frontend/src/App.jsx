@@ -5,6 +5,7 @@ import ScrollToTop from "./components/ScrollToTop";
 
 import Layout from "./components/Layout/Layout";
 import ErrorBoundary from "./ErrorBoundary";
+import BlurImage from "./pages/BlurImage";
 
 const PdfMerge = lazy(() => import("./pages/PdfMerge"));
 const PdfSign = lazy(() => import("./pages/PdfSign"));
@@ -53,6 +54,7 @@ function App() {
             <Route path="/pdf-sign" element={<PdfSign />} />
             <Route path="/pdf-watermark" element={<PDFWatermark />} />
 
+            <Route path="/image-blur" element={<BlurImage />} />
             <Route path="/image-to-webp" element={<ImageWbp />} />
             <Route path="/image-to-jpg" element={<ImageJpg />} />
             <Route path="/image-ocr" element={<ImageOCR />} />
