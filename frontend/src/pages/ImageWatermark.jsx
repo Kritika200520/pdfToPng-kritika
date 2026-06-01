@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { useOutletContext } from "react-router-dom";
 
 export default function ImageWatermark() {
   const [image, setImage] = useState(null);
@@ -70,7 +69,7 @@ export default function ImageWatermark() {
         formData.append("scale", scale);
       }
 
-      const response = await fetch("http://localhost:5000/add-watermark", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/add-watermark`, {
         method: "POST",
         body: formData,
       });
