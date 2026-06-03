@@ -121,7 +121,7 @@ function ImageWatermark() {
         formData.append("watermark_image", watermarkImage);
       }
 
-      const res = await fetch("http://localhost:5000/add-watermark", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/add-watermark`, {
         method: "POST",
         body: formData,
       });
