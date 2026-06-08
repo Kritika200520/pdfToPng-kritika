@@ -71,7 +71,7 @@ export default function PdfRotateFlip() {
       setScope("all");
       setPages("");
     }
-  }, [selectedPreviewPages]);
+  }, [selectedPreviewPages, pages]);
 
   // Helper functions
   const generateThumbnails = async (pdf) => {
