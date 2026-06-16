@@ -9,9 +9,10 @@ ALLOWED_ACTIONS = {"rotate_left", "rotate_right", "flip_h", "flip_v"}
 ALLOWED_FORMATS = {"PNG", "JPEG", "WEBP"}
 
 
-@rotate_flip_bp.route("/rotateFlip", methods=["POST"])
-@process_image_request
+@rotate_flip_bp.route("/rotateFlip", methods=["POST"])   # ← ONLY ONE
+@process_image_request                                    # ← ONLY ONE
 def rotate_flip(img, filename, file_bytes):
+    # ... rest of code ...
     output = None
     img_copy = None
     
