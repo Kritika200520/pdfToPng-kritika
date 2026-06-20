@@ -1,6 +1,12 @@
 ﻿import { useState, useRef, useCallback, useEffect } from "react";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import PdfWatermarkPreview from "../components/PdfWatermarkPreview";
+import {
+  toastError,
+  toastSuccess,
+  toastLoading,
+  toastDismiss,
+} from "../utils/toast";
 
 const POSITION_OPTIONS = [
   { value: "top-left", label: "Top Left" },
@@ -20,24 +26,17 @@ function PDFWatermark() {
   const [size, setSize] = useState(30);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("");
-  const [statusType, setStatusType] = useState("info"); // info | success | error
   const [imagePreview, setImagePreview] = useState(null);
 
   const inputRef = useRef(null);
   const imageInputRef = useRef(null);
 
-
-  const resetStatus = () => {
-    setStatusMessage("");
-    setStatusType("info");
-  };
+  const resetStatus = () => {};
 
   const handlePdfUpload = useCallback((incoming) => {
     const pdf = Array.from(incoming).find((f) => f.type === "application/pdf");
     if (!pdf) {
-      setStatusMessage("Only PDF files are accepted.");
-      setStatusType("error");
+      toastError("Only PDF files are accepted.");
       return;
     }
 
@@ -76,8 +75,7 @@ function PDFWatermark() {
     if (!imageFile) return;
 
     if (!["image/png", "image/jpeg", "image/jpg"].includes(imageFile.type)) {
-      setStatusMessage("Watermark image must be a PNG or JPG file.");
-      setStatusType("error");
+      toastError("Watermark image must be a PNG or JPG file.");
       return;
     }
 
@@ -142,20 +140,18 @@ function PDFWatermark() {
 
   const applyWatermark = async () => {
     if (!file) {
-      setStatusMessage("Upload a PDF to add watermark.");
-      setStatusType("error");
+      toastError("Please upload a PDF first.");
       return;
     }
 
     if (watermarkType === "image" && !watermarkImage) {
-      setStatusMessage("Upload a watermark image to continue.");
-      setStatusType("error");
+      toastError("Please upload a watermark image to continue.");
       return;
     }
 
     resetStatus();
     setIsLoading(true);
-    setStatusType("info");
+    const loadingId = toastLoading("Applying watermark…");
 
     try {
       const pdfBytes = await file.arrayBuffer();
@@ -234,14 +230,13 @@ function PDFWatermark() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      setStatusMessage("PDF watermarked successfully! File downloaded.");
-      setStatusType("success");
+      toastDismiss(loadingId);
+      toastSuccess("PDF watermarked and downloaded successfully!");
     } catch (err) {
-      setStatusMessage(`Error: ${err.message}`);
-      setStatusType("error");
+      toastDismiss(loadingId);
+      toastError(`Watermark failed: ${err.message}`);
     } finally {
       setIsLoading(false);
-      setTimeout(() => setStatusMessage(""), 5000);
     }
   };
 
@@ -474,21 +469,6 @@ function PDFWatermark() {
         )}
       </button>
 
-      {!file && (
-        <p className="mt-3 text-xs text-[#4361ee]">Upload a PDF to add watermark.</p>
-      )}
-
-      {statusMessage && (
-        <p className={`mt-6 text-[0.95rem] ${
-          statusType === "success"
-            ? "text-green-600"
-            : statusType === "error"
-            ? "text-red-500"
-            : "text-[#4b5563] dark:text-gray-300"
-        }`}>
-          {statusMessage}
-        </p>
-      )}
     </div>
   );
 }
